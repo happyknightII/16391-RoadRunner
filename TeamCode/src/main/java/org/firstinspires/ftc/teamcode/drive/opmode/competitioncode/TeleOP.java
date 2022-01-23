@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
+import org.firstinspires.ftc.teamcode.drive.Constants;
 import org.firstinspires.ftc.teamcode.drive.hardware.Robot;
 
 import java.util.List;
@@ -33,10 +34,6 @@ public class TeleOP extends LinearOpMode {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
-
-        //robot.armLeft.setPower(1);
-        //robot.armRight.setPower(1);
-        //robot.carouselSpinner  .setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Press Start to Begin");    //
@@ -67,25 +64,25 @@ public class TeleOP extends LinearOpMode {
         }
 
         if (gamepad2.a) {
-            robot.arm.setLevel(Robot.ArmPosition.INVERSE_FEED);
+            robot.arm.setLevel(Constants.ArmPosition.INVERSE_FEED);
         }else if (gamepad2.x) {
-            robot.arm.setLevel(Robot.ArmPosition.INVERSE_TOP);
+            robot.arm.setLevel(Constants.ArmPosition.INVERSE_TOP);
         }else if (gamepad2.b) {
-            robot.arm.setLevel(Robot.ArmPosition.INVERSE_BOTTOM);
+            robot.arm.setLevel(Constants.ArmPosition.INVERSE_BOTTOM);
         }else if (gamepad2.y) {
-            robot.arm.setLevel(Robot.ArmPosition.INVERSE_MIDDLE);
+            robot.arm.setLevel(Constants.ArmPosition.INVERSE_MIDDLE);
         }else if (gamepad2.dpad_left) {
-            robot.arm.setLevel(Robot.ArmPosition.BOTTOM);
+            robot.arm.setLevel(Constants.ArmPosition.BOTTOM);
         }else if (gamepad2.dpad_up) {
-            robot.arm.setLevel(Robot.ArmPosition.MIDDLE);
+            robot.arm.setLevel(Constants.ArmPosition.MIDDLE);
         }else if (gamepad2.dpad_right) {
-            robot.arm.setLevel(Robot.ArmPosition.TOP);
+            robot.arm.setLevel(Constants.ArmPosition.TOP);
         }else if (gamepad2.dpad_down) {
-            robot.arm.setLevel(Robot.ArmPosition.FEED);
+            robot.arm.setLevel(Constants.ArmPosition.FEED);
         }else if(gamepad2.left_bumper) {
-            robot.arm.setLevel(Robot.ArmPosition.CAP_UP);
+            robot.arm.setLevel(Constants.ArmPosition.CAP_UP);
         }else if (gamepad2.right_bumper) {
-            robot.arm.setLevel(Robot.ArmPosition.CAP_DOWN);
+            robot.arm.setLevel(Constants.ArmPosition.CAP_DOWN);
         }
 
         switch (carouselState) {

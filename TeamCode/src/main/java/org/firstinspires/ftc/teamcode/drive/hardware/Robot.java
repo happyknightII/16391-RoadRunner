@@ -24,21 +24,6 @@ public class Robot {
 
     HardwareMap hwMap;
 
-    public Robot() {}
-
-    public final static class ArmPosition {
-        public final static int FEED           = 0;
-        public final static int BOTTOM         = 1;
-        public final static int MIDDLE         = 2;
-        public final static int TOP            = 3;
-        public final static int INVERSE_TOP    = 4;
-        public final static int INVERSE_MIDDLE = 5;
-        public final static int INVERSE_BOTTOM = 6;
-        public final static int CAP_UP         = 7;
-        public final static int CAP_DOWN       = 8;
-        public final static int INVERSE_FEED   = 9;
-    }
-
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         hwMap = ahwMap;

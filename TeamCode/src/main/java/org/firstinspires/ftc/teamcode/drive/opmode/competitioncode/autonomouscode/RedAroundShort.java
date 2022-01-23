@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.drive.Constants;
 import org.firstinspires.ftc.teamcode.drive.hardware.Robot;
 
 @Autonomous(name = "Red Auto: Warehouse - Around - Right - Short", group = "Red")
@@ -13,36 +14,34 @@ import org.firstinspires.ftc.teamcode.drive.hardware.Robot;
 public class RedAroundShort extends AutonomousTemplate {
     Robot robot = new Robot();
     private int autoState = 1;
-    ElapsedTime runtime = new ElapsedTime();
+    ElapsedTime elapsedTimer = new ElapsedTime();
+    ElapsedTime runTimer     = new ElapsedTime();
+    ElapsedTime cycleTimer   = new ElapsedTime();
+    double      cycleTime   = 0;
 
     public void initialize() {
-        super.initialize();
         robot.init(hardwareMap);
         robot.arm.lower();
     }
 
     public void starting(){
-        super.starting();
+        runTimer.reset();
         robot.arm.calibrate();
     }
 
     public void leftPath() {
-        super.leftPath();
-        robot.arm.setLevel(Robot.ArmPosition.BOTTOM);
+        robot.arm.setLevel(Constants.ArmPosition.BOTTOM);
     }
 
     public void rightPath() {
-        super.rightPath();
-        robot.arm.setLevel(Robot.ArmPosition.MIDDLE);
+        robot.arm.setLevel(Constants.ArmPosition.MIDDLE);
 
     }
 
     public void unseenPath() {
-        super.unseenPath();
-        robot.arm.setLevel(Robot.ArmPosition.TOP);
+        robot.arm.setLevel(Constants.ArmPosition.TOP);
 
     }
-
 
     public void regularAutonomous() {
         super.regularAutonomous();
@@ -65,66 +64,65 @@ public class RedAroundShort extends AutonomousTemplate {
                 .splineToSplineHeading(new Pose2d(-5,-40,Math.toRadians(110)), Math.toRadians(100))
                 .build();
 
-        while (opModeIsActive()) {  //FSM
+        a: while (opModeIsActive()) {  //FSM
             switch(autoState) {
                 case 1:
                     robot.driveTrain.followTrajectoryAsync(startAuto); //Start move
                     autoState = 2;
-                    runtime.reset();
+                    elapsedTimer.reset();
                     break;
 
                 case 2: // at starting position to hub
-                    robot.driveTrain.update();          // update values for drive motors according to trajectory
-                    if (runtime.time() > 1) {           // close enough to eject block
+                    robot.driveTrain.update();              // update values for drive motors according to trajectory
+                    if (elapsedTimer.time() > 1) {           // close enough to eject block
                         robot.intake.outtake();
                     }
-                    if (!robot.driveTrain.isBusy()) {   // wait for robot to arrive
+                    if (!robot.driveTrain.isBusy()) {       // wait for robot to arrive
                         robot.driveTrain.followTrajectoryAsync(moveToWarehouse);    // start new trajectory
                         robot.intake.stop();
                         autoState = 3;
-                        runtime.reset();
+                        elapsedTimer.reset();
+                        cycleTimer.reset();
                     }
                     break;
 
                 case 3: // at hub to warehouse
                     robot.driveTrain.update();
-                    if (runtime.time() > 0.2) {         // can move arm without flipping shipping hub
-                        robot.arm.setLevel(Robot.ArmPosition.INVERSE_FEED);
+                    if (elapsedTimer.time() > 0.2) {         // can move arm without flipping shipping hub
+                        robot.arm.setLevel(Constants.ArmPosition.INVERSE_FEED);
 
                     }
-                    if (!robot.arm.isBusy()) {          // wait for feed position to intake
+                    if (!robot.arm.isBusy()) {              // wait for feed position to intake
                         robot.intake.intake();
                     }
-                    if (!robot.driveTrain.isBusy()) {    // wait for robot to arrive
+                    if (!robot.driveTrain.isBusy()) {       // wait for robot to arrive
                         robot.driveTrain.followTrajectoryAsync(moveToShippingHub);
+                        robot.intake.stop();
                         autoState = 4;
-                        runtime.reset();
+                        elapsedTimer.reset();
                     }
                     break;
 
                 case 4: // at warehouse to hub
                     robot.driveTrain.update();
-                    if (runtime.time() > 1) {
-                        robot.arm.setLevel(Robot.ArmPosition.TOP);
+                    if (elapsedTimer.time() > 1) {          // wait to clear barrier to raise arm
+                        robot.arm.setLevel(Constants.ArmPosition.TOP);
                     }
-                    if (!robot.driveTrain.isBusy()) {
-                        robot.driveTrain.followTrajectoryAsync(moveToWarehouse);
-                        autoState = 3;
+                    if (!robot.driveTrain.isBusy()) {       // wait for robot to arrive
+                            robot.driveTrain.followTrajectoryAsync(moveToWarehouse);
+                            if (cycleTimer.time() > cycleTime) {                        // Store greatest cycle time
+                                cycleTime = cycleTimer.time();
+                            }
+
+                            autoState = (runTimer.time() + cycleTime >= 29.5) ? 5:3;    // Check if enough time to run another cycle
+                            cycleTimer.reset();
                     }
                     break;
+
+                case 5:
+                    break a;
             }
         }
-        while(opModeIsActive() && robot.driveTrain.isBusy()) {
-            robot.driveTrain.update();
-        }
-        //robot.intake.outtake();
-        robot.driveTrain.followTrajectoryAsync(moveToWarehouse);
-        //sleep(1000);
-        //robot.intake.intake();
-        while(opModeIsActive() && robot.driveTrain.isBusy()) {
-            robot.driveTrain.update();
-        }
-        robot.driveTrain.followTrajectory(moveToShippingHub);
     }
 }
 

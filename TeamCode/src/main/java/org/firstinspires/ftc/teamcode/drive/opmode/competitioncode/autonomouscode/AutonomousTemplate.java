@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.drive.opmode.competitioncode.autonomousco
 
 import android.util.Log;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import java.util.List;
@@ -11,26 +10,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.drive.Constants;
 
-@Autonomous(name = "Autonomous", group = "Red")
-//@Disabled
+
 public class AutonomousTemplate extends LinearOpMode {
     List<Recognition> updatedRecognitions;
-
-    private static final String TENSORFLOW_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
-    private static final String[] LABELS = {
-            "Ball",
-            "Cube",
-            "Duck",
-            "Marker"
-    };
-
-    private static final String VUFORIA_KEY =
-            "AYNvGMT/////AAABmbqx+cB66Uiuq1x4OtVVYaYqPxwETuoHASIFChwOE0FE5KyJCGATrLe9r1HPlycJfKg4" +
-                    "LyYDwGfvzkJ5Afan80ksPhJFg+93fhn8xNTgV09R7cY6VtUrO61/myrjehuHoRU6UH8hAZdlV0E" +
-                    "6/Q1y36TSsp0iaOWX008UCFI/jJo/UoWG7y6uZsPH5MJxGucu6jWBjERv+bS9zHvsGFDlGmIFdJi" +
-                    "c2YbYP+SpUM+KK437815Iz/PxAAAK+1SUObQVGiVj/FuqB5yhSvBrkX1H1NQ2jzZDfNfzEQr5cHM" +
-                    "zU68IOGhxd+yjicwx7ppxaAcFlrPE8hILKAQ90k5i6gwY1vzHwapOgLA5PSI0jsX1z/Dg";
 
     private VuforiaLocalizer vuforia;
 
@@ -137,7 +121,7 @@ public class AutonomousTemplate extends LinearOpMode {
     private void initVuforia() {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.vuforiaLicenseKey = Constants.Vuforia.VUFORIA_KEY;
         parameters.cameraDirection = CameraDirection.BACK;
 
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -151,6 +135,6 @@ public class AutonomousTemplate extends LinearOpMode {
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 320;
         tensorflow = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tensorflow.loadModelFromAsset(TENSORFLOW_MODEL_ASSET, LABELS);
+        tensorflow.loadModelFromAsset(Constants.Vuforia.TENSORFLOW_MODEL_ASSET, Constants.Vuforia.LABELS);
     }
 }
