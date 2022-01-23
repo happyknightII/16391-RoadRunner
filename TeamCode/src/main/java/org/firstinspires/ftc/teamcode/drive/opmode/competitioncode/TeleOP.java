@@ -47,7 +47,7 @@ public class TeleOP extends LinearOpMode {
         if(opModeIsActive()) {
             while (opModeIsActive()) {
                 opLoop();
-                displayTelemetry();
+                robot.displayTelemetry(telemetry);
                 // Pace this loop so jaw action is reasonable speed.
                 sleep(25);
             }
@@ -110,18 +110,5 @@ public class TeleOP extends LinearOpMode {
                 break;
         }
 
-    }
-
-    public void displayTelemetry() {
-        final List<Double> wheelLocations = robot.driveTrain.getWheelPositions();
-        telemetry.addLine("Wheel position")
-                .addData("Front Left", -wheelLocations.get(0))
-                .addData("Front Right", -wheelLocations.get(1))
-                .addData("Back Left", -wheelLocations.get(2))
-                .addData("Back Right", -wheelLocations.get(3));
-        telemetry.addLine("Arm")
-                .addData("Target Level", robot.arm.getTargetLevel())
-                .addData("Encoder Position", robot.arm.getCurrentPosition());
-        telemetry.update();
     }
 }

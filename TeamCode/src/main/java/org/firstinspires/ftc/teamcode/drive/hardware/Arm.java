@@ -46,18 +46,19 @@ public class Arm{
         motor.setPower(0);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setPower(1);
     }
 
     public void setLevel(int level) {
         targetLevel = level;
         switch (level) {
             case 0: motor.setTargetPosition(FEED);
-                    break;
+                break;
             case 1: motor.setTargetPosition(BOTTOM);
                 break;
             case 2: motor.setTargetPosition(MIDDLE);
                 break;
-            case 3: motor.setTargetPosition(TOP);
+            case 3:motor.setTargetPosition(TOP);
                 break;
             case 4: motor.setTargetPosition(INVERSE_TOP);
                 break;
@@ -81,6 +82,10 @@ public class Arm{
 
     public int getCurrentPosition() {
         return motor.getCurrentPosition();
+    }
+
+    public boolean isBusy () {
+        return motor.isBusy();
     }
 
 }
