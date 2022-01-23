@@ -24,7 +24,7 @@ public class RedAroundShort extends AutonomousTemplate {
         robot.arm.lower();
     }
 
-    public void starting(){
+    public void starting() {
         runTimer.reset();
         robot.arm.calibrate();
     }
