@@ -1,7 +1,6 @@
 package com.example.meepmeep;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
@@ -11,7 +10,6 @@ import com.noahbres.meepmeep.roadrunner.DriveShim;
 import com.noahbres.meepmeep.roadrunner.DriveTrainType;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence;
-import com.sun.org.apache.bcel.internal.Const;
 
 public class MeepMeepTesting {
     static MeepMeep meepMeep = new MeepMeep(800);
@@ -20,14 +18,16 @@ public class MeepMeepTesting {
         meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(RedShort.myBot)
-                .addEntity(BlueShort.myBot)
+                .addEntity(RedCarousel.myBot)
+                .addEntity(BlueCarousel.myBot)
+                .addEntity(RedWarehouse.myBot)
+                .addEntity(BlueWarehouse.myBot)
                 .start();
 
 
     }
 
-    public static class RedShort {
+    public static class RedWarehouse {
         static Pose2d startPose = new Pose2d(6.44, -63, Math.toRadians(90));
 
         static Pose2d hubPose = new Pose2d(-5, -45, Math.toRadians(110));
@@ -99,7 +99,7 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive);
     }
 
-    public static class BlueShort {
+    public static class BlueWarehouse {
         static MeepMeep meepMeep = new MeepMeep(800);
 
         static Pose2d startPose = new Pose2d(6.44, 63, Math.toRadians(270));
@@ -168,10 +168,76 @@ public class MeepMeepTesting {
                 .build();
 
         static RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeBlueDark())
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setColorScheme(new ColorSchemeBlueDark())
                 .setDimensions(11, 15.5)
                 .setConstraints(56, 60, Math.toRadians(330), Math.toRadians(110), 8.87)
+
+                .followTrajectorySequence(drive);
+    }
+
+    public static class RedCarousel {
+        static Pose2d startPose = new Pose2d(-25, -63, Math.toRadians(90));
+
+        static Pose2d hubPose = new Pose2d(-20, -45, Math.toRadians(70));
+
+        static Pose2d carouselPose = new Pose2d(-61,-55,Math.toRadians(0));
+
+        static double startCarouselTangent = Math.toRadians(-160);
+        static double endCarouselTangent = Math.toRadians(180);
+
+        static TrajectorySequence drive = new DriveShim(DriveTrainType.MECANUM, new Constraints(30, 20, Math.toRadians(330), Math.toRadians(110), 8.87), startPose).trajectorySequenceBuilder(startPose).setTangent(Math.toRadians(280))
+
+                .lineToSplineHeading(hubPose).setTangent(startCarouselTangent)                                                      // Starting point -> Hub
+                .addDisplacementMarker(() -> System.out.println("robot.intake.outtake(-1)"))
+                .waitSeconds(0.5)
+                .addDisplacementMarker(() -> System.out.println("robot.arm.setLevel(Constants.ArmPosition.FEED)"))
+                .waitSeconds(0.5)
+                .splineToSplineHeading(carouselPose, endCarouselTangent)
+                .addDisplacementMarker(() -> System.out.println("robot.carousel.setPower(0.3)"))
+                .strafeRight(6)
+                .waitSeconds(4)
+                .strafeLeft(26)
+                .build();
+
+        static RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
+                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setColorScheme(new ColorSchemeRedDark())
+                .setDimensions(11, 15.5)
+                .setConstraints(56, 60, Math.toRadians(330), Math.toRadians(110), 8.87)
+
+                .followTrajectorySequence(drive);
+    }
+    public static class BlueCarousel {
+        static Pose2d startPose = new Pose2d(-25, 63, Math.toRadians(-90));
+
+        static Pose2d hubPose = new Pose2d(-20, 45, Math.toRadians(-70));
+
+        static Pose2d carouselPose = new Pose2d(-61,55,Math.toRadians(180));
+
+        static double startCarouselTangent = Math.toRadians(160);
+        static double endCarouselTangent = Math.toRadians(180);
+
+        static TrajectorySequence drive = new DriveShim(DriveTrainType.MECANUM, new Constraints(30, 20, Math.toRadians(330), Math.toRadians(110), 8.87), startPose).trajectorySequenceBuilder(startPose).setTangent(Math.toRadians(280))
+
+                .lineToSplineHeading(hubPose).setTangent(startCarouselTangent)                                                      // Starting point -> Hub
+                .addDisplacementMarker(() -> System.out.println("robot.intake.outtake(-1)"))
+                .waitSeconds(0.5)
+                .addDisplacementMarker(() -> System.out.println("robot.arm.setLevel(Constants.ArmPosition.FEED)"))
+                .waitSeconds(0.5)
+                .splineToSplineHeading(carouselPose, endCarouselTangent)
+                .addDisplacementMarker(() -> System.out.println("robot.carousel.setPower(0.3)"))
+                .strafeRight(6)
+                .waitSeconds(4)
+                .strafeLeft(26)
+                .build();
+
+        static RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
+                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setColorScheme(new ColorSchemeBlueDark())
+                .setDimensions(11, 15.5)
+                .setConstraints(56, 60, Math.toRadians(330), Math.toRadians(110), 8.87)
+
                 .followTrajectorySequence(drive);
     }
 }
