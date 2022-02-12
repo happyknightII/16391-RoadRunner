@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.competitioncode.autonomouscode;
+package org.firstinspires.ftc.teamcode.opmode.competitioncode.autonomouscode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;

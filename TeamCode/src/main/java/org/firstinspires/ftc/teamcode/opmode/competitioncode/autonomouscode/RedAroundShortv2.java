@@ -1,11 +1,9 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.competitioncode.autonomouscode;
+package org.firstinspires.ftc.teamcode.opmode.competitioncode.autonomouscode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.teamcode.drive.Constants;
 import org.firstinspires.ftc.teamcode.drive.hardware.Robot;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
