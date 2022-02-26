@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.drive.hardware;
 
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -34,19 +37,20 @@ public class Robot {
         carousel.init(hwMap);
     }
 
-    public void drive(double forward, double strafe, double turn) {
-        Vector2d input = new Vector2d(
-                -forward,
-                -strafe
-        );
 
-        driveTrain.setWeightedDrivePower(
-                new Pose2d(
-                        input.getX(),
-                        input.getY(),
-                        -turn
-                )
-        );
+    public void drive(double forward, double strafe, double turn) {
+        PIDFController pidThing = new PIDFController(new PIDCoefficients(0, 0, 0));
+        pidThing.getTargetVelocity();
+        double[] drivePowers = {
+                forward + strafe - turn,    //LF
+                forward - strafe - turn,    //LR
+                forward - strafe + turn,    //RF
+                forward + strafe + turn,    //RR
+        };
+
+
+        driveTrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveTrain.setMotorPowers(drivePowers[0], drivePowers[1], drivePowers[2], drivePowers[3]);
     }
     public void displayTelemetry(Telemetry telemetry) {
         final List<Double> wheelLocations = driveTrain.getWheelPositions();
